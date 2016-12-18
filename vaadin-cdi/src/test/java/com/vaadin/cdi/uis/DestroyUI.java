@@ -1,5 +1,6 @@
 package com.vaadin.cdi.uis;
 
+import com.vaadin.cdi.CDINavigator;
 import com.vaadin.cdi.CDIUI;
 import com.vaadin.cdi.CDIViewProvider;
 import com.vaadin.cdi.UIScoped;
@@ -29,6 +30,9 @@ public class DestroyUI extends UI {
 
     @Inject
     CDIViewProvider viewProvider;
+
+    @Inject
+    CDINavigator navigator;
 
     @Inject
     UIScopedBean bean;
@@ -82,7 +86,7 @@ public class DestroyUI extends UI {
         viewNavigateBtn.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                final Navigator navigator = new Navigator(DestroyUI.this, new ViewDisplay() {
+                navigator.init(DestroyUI.this, new ViewDisplay() {
                     @Override
                     public void showView(View view) {
                     }

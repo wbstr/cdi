@@ -36,7 +36,7 @@ import com.vaadin.cdi.server.VaadinCDIServletService;
 public class ArchiveProvider {
 
     public final static Class FRAMEWORK_CLASSES[] = new Class[] {
-            AccessControl.class, CDIUIProvider.class, CDIViewProvider.class,
+            AccessControl.class, CDIUIProvider.class, CDIViewProvider.class, CDINavigator.class,
             ContextDeployer.class, JaasAccessControl.class,
             UIScopedContext.class, CDIUI.class,
             ViewScopedContext.class,

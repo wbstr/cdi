@@ -1,9 +1,6 @@
 package com.vaadin.cdi.uis;
 
-import com.vaadin.cdi.CDIUI;
-import com.vaadin.cdi.CDIView;
-import com.vaadin.cdi.CDIViewProvider;
-import com.vaadin.cdi.ViewScoped;
+import com.vaadin.cdi.*;
 import com.vaadin.cdi.internal.Counter;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
@@ -35,6 +32,8 @@ public class DestroyViewUI extends UI {
     @Inject
     CDIViewProvider viewProvider;
     @Inject
+    CDINavigator navigator;
+    @Inject
     Counter counter;
 
     @Override
@@ -62,7 +61,7 @@ public class DestroyViewUI extends UI {
         });
         layout.addComponent(closeBtn);
 
-        final Navigator navigator = new Navigator(this, new ViewDisplay() {
+        navigator.init(this, new ViewDisplay() {
             @Override
             public void showView(View view) {
             }

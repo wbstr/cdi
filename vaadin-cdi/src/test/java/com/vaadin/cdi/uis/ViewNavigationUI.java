@@ -1,9 +1,6 @@
 package com.vaadin.cdi.uis;
 
-import com.vaadin.cdi.CDIUI;
-import com.vaadin.cdi.CDIView;
-import com.vaadin.cdi.CDIViewProvider;
-import com.vaadin.cdi.NormalViewScoped;
+import com.vaadin.cdi.*;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
@@ -28,6 +25,8 @@ public class ViewNavigationUI extends UI {
     @Inject
     CDIViewProvider viewProvider;
     @Inject
+    CDINavigator navigator;
+    @Inject
     ViewScopedBean bean;
 
     @Override
@@ -45,7 +44,7 @@ public class ViewNavigationUI extends UI {
         value.setId(VALUE_LABEL_ID);
         layout.addComponent(value);
 
-        final Navigator navigator = new Navigator(this, new ViewDisplay() {
+        navigator.init(this, new ViewDisplay() {
             @Override
             public void showView(View view) {
             }

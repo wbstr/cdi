@@ -16,6 +16,7 @@
 
 package com.vaadin.cdi.uis;
 
+import com.vaadin.cdi.CDINavigator;
 import com.vaadin.cdi.CDIUI;
 import com.vaadin.cdi.CDIViewProvider;
 import com.vaadin.cdi.internal.Counter;
@@ -35,6 +36,8 @@ public class ParameterizedNavigationUI extends UI {
     public static final String CONSTRUCT_COUNT = "ParameterizedNavigationUIConstruct";
     @Inject
     CDIViewProvider viewProvider;
+    @Inject
+    CDINavigator navigator;
 
     @Inject
     Counter counter;
@@ -57,8 +60,7 @@ public class ParameterizedNavigationUI extends UI {
         Button navigate = new Button("button", new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
-                Navigator navigator = new Navigator(
-                        ParameterizedNavigationUI.this, layout);
+                navigator.init(ParameterizedNavigationUI.this, layout);
                 navigator.addProvider(viewProvider);
                 navigator.navigateTo(navigateTo);
             }
