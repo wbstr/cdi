@@ -18,11 +18,13 @@ package com.vaadin.cdi;
 
 import com.vaadin.cdi.access.AccessControl;
 import com.vaadin.cdi.internal.*;
+import com.vaadin.cdi.internal.ViewScopedContext.ViewStorageKey;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.navigator.ViewProvider;
 import com.vaadin.ui.UI;
+import com.vaadin.util.CurrentInstance;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -80,6 +82,7 @@ public class CDIViewProvider implements ViewProvider {
             long sessionId = CDIUtil.getSessionId();
             int uiId = event.getNavigator().getUI().getUIId();
             String viewName = event.getViewName();
+            CurrentInstance.set(ViewScopedContext.ViewStorageKey.class, null);
             beanManager.fireEvent(new VaadinViewChangeEvent(sessionId, uiId,
                     viewName));
         }
@@ -279,13 +282,13 @@ public class CDIViewProvider implements ViewProvider {
                     "Created new creational context for current view {0}",
                     creationalContext);
 
-            beanManager.fireEvent(new VaadinViewCreationEvent(sessionId,
-                    currentUI.getUIId(), viewName));
             cleanupEvent.set(new VaadinViewChangeCleanupEvent(sessionId, currentUI
                     .getUIId()));
-
+            ViewStorageKey key = new ViewStorageKey(currentUI.getUIId(), viewName);
+            CurrentInstance.set(ViewStorageKey.class, key);
             View view = (View) beanManager.getReference(viewBean,
                     viewBean.getBeanClass(), creationalContext);
+
             getLogger().log(Level.FINE, "Returning view instance {0}", view.toString());
 
             if (Dependent.class.isAssignableFrom(viewBean.getScope())) {

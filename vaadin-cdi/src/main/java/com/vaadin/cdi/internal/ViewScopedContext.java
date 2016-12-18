@@ -21,7 +21,7 @@ import java.util.logging.Logger;
 
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.inject.spi.BeanManager;
-
+import com.vaadin.util.CurrentInstance;
 import org.apache.deltaspike.core.util.context.ContextualStorage;
 
 import com.vaadin.cdi.ViewScoped;
@@ -33,7 +33,7 @@ import com.vaadin.ui.UI;
  */
 public class ViewScopedContext extends AbstractVaadinContext {
 
-    private static class ViewStorageKey extends StorageKey {
+    public static class ViewStorageKey extends StorageKey {
         private final String viewName;
 
         public ViewStorageKey(int uiId, String viewName) {
@@ -90,8 +90,12 @@ public class ViewScopedContext extends AbstractVaadinContext {
         if (currentUI == null) {
             throw new IllegalStateException("Unable to resolve " + contextual + ", current UI not set.");
         }
+        ViewStorageKey openingViewKey = CurrentInstance.get(ViewStorageKey.class);
+        if (openingViewKey != null) {
+            return openingViewKey;
+        }
         UIData uiData = sessionData.getUIData(currentUI.getUIId(), true);
-        String viewName = uiData.getProbableInjectionPointView();
+        String viewName = uiData.getActiveView();
         if (viewName == null) {
             throw new IllegalStateException("Could not determine active View for " + contextual);
         }
@@ -99,46 +103,20 @@ public class ViewScopedContext extends AbstractVaadinContext {
         return new ViewStorageKey(currentUI.getUIId(), viewName);
     }
 
-    synchronized void prepareForViewChange(long sessionId, int uiId,
-                                           String activeViewName) {
-        getLogger().fine("Setting next view to " + activeViewName);
-        SessionData sessionData = getSessionData(sessionId, true);
-        UIData uiData = sessionData.getUIData(uiId, true);
-        uiData.setOpeningView(activeViewName);
-    }
-
     synchronized void viewChangeCleanup(long sessionId, int uiId, String viewName) {
         getLogger().fine("ViewChangeCleanup for " + sessionId + " " + uiId);
         SessionData sessionData = getSessionData(sessionId, true);
         UIData uiData = sessionData.getUIData(uiId, true);
-        String activeViewName;
-        if (uiData.getOpeningView() != null) {
-            uiData.validateTransition();
-            activeViewName = uiData.getActiveView();
-            assert activeViewName.equals(viewName);
-        } else {
-            activeViewName = viewName;
-            uiData.setActiveView(activeViewName);
-        }
+        uiData.setActiveView(viewName);
         Map<StorageKey, ContextualStorage> map = sessionData.getStorageMap();
 
         for (Map.Entry<StorageKey, ContextualStorage> entry : map.entrySet()) {
             ViewStorageKey key = (ViewStorageKey) entry.getKey();
-            if (key.getUiId() == uiId && !key.getViewName().equals(activeViewName)) {
+            if (key.getUiId() == uiId && !key.getViewName().equals(viewName)) {
                 ContextualStorage storage = entry.getValue();
                 getLogger().fine("dropping " + key + " : " + storage);
                 map.remove(key);
                 destroyAllActive(storage);
-            }
-        }
-    }
-
-    synchronized void clearPendingViewChange(long sessionId, int uiId) {
-        SessionData sessionData = getSessionData(sessionId, false);
-        if (sessionData != null) {
-            UIData uiData = sessionData.getUIData(uiId);
-            if (uiData != null) {
-                uiData.clearPendingViewChange();
             }
         }
     }

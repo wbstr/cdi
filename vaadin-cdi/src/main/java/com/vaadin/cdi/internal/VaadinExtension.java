@@ -138,8 +138,6 @@ public class VaadinExtension implements Extension {
         }
         if (viewScopedContext != null) {
             viewScopedContext.uiCloseCleanup();
-            viewScopedContext.clearPendingViewChange(event.getSessionId(),
-                    event.getUiId());
         }
     }
 
@@ -152,10 +150,4 @@ public class VaadinExtension implements Extension {
         }
     }
 
-    private void navigationStarting(@Observes VaadinViewCreationEvent event) {
-        if (viewScopedContext != null) {
-            viewScopedContext.prepareForViewChange(event.getSessionId(),
-                    event.getUIId(), event.getViewMapping());
-        }
-    }
 }

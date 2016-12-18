@@ -30,7 +30,6 @@ import javax.enterprise.inject.spi.BeanManager;
 import org.apache.deltaspike.core.util.context.AbstractContext;
 import org.apache.deltaspike.core.util.context.ContextualStorage;
 
-import com.vaadin.cdi.internal.AbstractVaadinContext.SessionData.UIData;
 import com.vaadin.server.VaadinSession;
 
 /**
@@ -89,7 +88,6 @@ public abstract class AbstractVaadinContext extends AbstractContext {
             private int uiId;
 
             private String activeView = null;
-            private String openingView = null;
 
             public UIData(int uiId) {
                 this.uiId = uiId;
@@ -103,38 +101,8 @@ public abstract class AbstractVaadinContext extends AbstractContext {
                 return activeView;
             }
 
-            public String getOpeningView() {
-                return openingView;
-            }
-
-            public String getProbableInjectionPointView() {
-                if (openingView != null) {
-                    return openingView;
-                }
-                if (activeView != null) {
-                    return activeView;
-                }
-                throw new IllegalStateException(
-                        "Can't find proper view for @ViewScoped bean, no views are active for this ui.");
-            }
-
-            public void setOpeningView(String openingView) {
-                this.openingView = openingView;
-            }
-
             public void setActiveView(String activeView) {
                 this.activeView = activeView;
-            }
-
-            public void validateTransition() {
-                if(openingView != null) {
-                    activeView = openingView;
-                    openingView = null;
-                }
-            }
-
-            public void clearPendingViewChange() {
-                openingView = null;
             }
 
         }

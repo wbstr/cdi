@@ -1,11 +1,13 @@
 package com.vaadin.cdi;
 
+import com.vaadin.cdi.internal.ViewScopedContext;
 import com.vaadin.navigator.NavigationStateManager;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.ViewDisplay;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.SingleComponentContainer;
 import com.vaadin.ui.UI;
+import com.vaadin.util.CurrentInstance;
 
 public class CDINavigator extends Navigator {
     @Override
@@ -28,5 +30,6 @@ public class CDINavigator extends Navigator {
     @Override
     protected void revertNavigation() {
         super.revertNavigation();
+        CurrentInstance.set(ViewScopedContext.ViewStorageKey.class, null);
     }
 }
