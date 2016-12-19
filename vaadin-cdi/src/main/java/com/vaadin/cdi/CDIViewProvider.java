@@ -59,42 +59,6 @@ public class CDIViewProvider implements ViewProvider {
     private AccessControl accessControl;
     private transient CreationalContext<?> dependentViewCreationalContext;
 
-    public final static class ViewChangeListenerImpl implements
-            ViewChangeListener {
-
-        private BeanManager beanManager;
-
-        public ViewChangeListenerImpl(BeanManager beanManager) {
-            this.beanManager = beanManager;
-        }
-
-        @Override
-        public boolean beforeViewChange(ViewChangeEvent event) {
-            return true;
-        }
-
-        @Override
-        public void afterViewChange(ViewChangeEvent event) {
-            getLogger().fine(
-                    "Changing view from " + event.getOldView() + " to "
-                            + event.getNewView());
-            // current session id
-            long sessionId = CDIUtil.getSessionId();
-            int uiId = event.getNavigator().getUI().getUIId();
-            String viewName = event.getViewName();
-            CurrentInstance.set(ViewScopedContext.ViewStorageKey.class, null);
-            beanManager.fireEvent(new VaadinViewChangeEvent(sessionId, uiId,
-                    viewName));
-        }
-    }
-
-    private ViewChangeListener viewChangeListener;
-
-    @PostConstruct
-    private void postConstruct() {
-        viewChangeListener = new ViewChangeListenerImpl(beanManager);
-    }
-
     @Override
     public String getViewName(String viewAndParameters) {
         getLogger().log(Level.FINE,
@@ -295,14 +259,6 @@ public class CDIViewProvider implements ViewProvider {
                 dependentViewCreationalContext = creationalContext;
             }
 
-            Navigator navigator = currentUI.getNavigator();
-            if (navigator != null) {
-                // This is a fairly dumb way of making sure that there is
-                // one and only one CDI viewChangeListener for this
-                // Navigator.
-                navigator.removeViewChangeListener(viewChangeListener);
-                navigator.addViewChangeListener(viewChangeListener);
-            }
             return view;
         }
 

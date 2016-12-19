@@ -16,13 +16,10 @@
 package com.vaadin.cdi.internal;
 
 import java.lang.annotation.Annotation;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.inject.spi.BeanManager;
-
-import org.apache.deltaspike.core.util.context.ContextualStorage;
 
 import com.vaadin.cdi.UIScoped;
 import com.vaadin.ui.UI;
@@ -44,7 +41,7 @@ public class UIScopedContext extends AbstractVaadinContext {
     }
 
     @Override
-    protected StorageKey getStorageKey(Contextual<?> contextual, SessionData sessionData) {
+    protected StorageKey getStorageKey(Contextual<?> contextual) {
         if (CurrentInstance.get(StorageKey.class) != null) {
             return CurrentInstance.get(StorageKey.class);
         } else {

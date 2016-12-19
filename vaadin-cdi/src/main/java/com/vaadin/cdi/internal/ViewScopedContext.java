@@ -22,16 +22,18 @@ import java.util.logging.Logger;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.inject.spi.BeanManager;
 import com.vaadin.util.CurrentInstance;
+import org.apache.deltaspike.core.api.provider.BeanProvider;
 import org.apache.deltaspike.core.util.context.ContextualStorage;
 
 import com.vaadin.cdi.ViewScoped;
-import com.vaadin.cdi.internal.AbstractVaadinContext.SessionData.UIData;
 import com.vaadin.ui.UI;
 
 /**
  * ViewScopedContext is the context for @ViewScoped beans.
  */
 public class ViewScopedContext extends AbstractVaadinContext {
+
+    private ActiveViewContextHolder activeViewContextHolder;
 
     public static class ViewStorageKey extends StorageKey {
         private final String viewName;
@@ -85,7 +87,7 @@ public class ViewScopedContext extends AbstractVaadinContext {
     }
 
     @Override
-    protected StorageKey getStorageKey(Contextual<?> contextual, SessionData sessionData) {
+    protected StorageKey getStorageKey(Contextual<?> contextual) {
         UI currentUI = UI.getCurrent();
         if (currentUI == null) {
             throw new IllegalStateException("Unable to resolve " + contextual + ", current UI not set.");
@@ -94,8 +96,7 @@ public class ViewScopedContext extends AbstractVaadinContext {
         if (openingViewKey != null) {
             return openingViewKey;
         }
-        UIData uiData = sessionData.getUIData(currentUI.getUIId(), true);
-        String viewName = uiData.getActiveView();
+        String viewName = getActiveViewContextHolder().getActiveViewName();
         if (viewName == null) {
             throw new IllegalStateException("Could not determine active View for " + contextual);
         }
@@ -103,11 +104,17 @@ public class ViewScopedContext extends AbstractVaadinContext {
         return new ViewStorageKey(currentUI.getUIId(), viewName);
     }
 
+    private ActiveViewContextHolder getActiveViewContextHolder() {
+        if (activeViewContextHolder == null) {
+            activeViewContextHolder = BeanProvider
+                    .getContextualReference(getBeanManager(), ActiveViewContextHolder.class, false);
+        }
+        return activeViewContextHolder;
+    }
+
     synchronized void viewChangeCleanup(long sessionId, int uiId, String viewName) {
         getLogger().fine("ViewChangeCleanup for " + sessionId + " " + uiId);
         SessionData sessionData = getSessionData(sessionId, true);
-        UIData uiData = sessionData.getUIData(uiId, true);
-        uiData.setActiveView(viewName);
         Map<StorageKey, ContextualStorage> map = sessionData.getStorageMap();
 
         for (Map.Entry<StorageKey, ContextualStorage> entry : map.entrySet()) {

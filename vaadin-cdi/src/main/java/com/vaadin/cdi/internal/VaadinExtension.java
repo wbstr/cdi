@@ -133,11 +133,11 @@ public class VaadinExtension implements Extension {
     }
 
     private void requestEnd(@Observes VaadinViewChangeCleanupEvent event) {
-        if (uiScopedContext != null) {
-            uiScopedContext.uiCloseCleanup();
-        }
         if (viewScopedContext != null) {
             viewScopedContext.uiCloseCleanup();
+        }
+        if (uiScopedContext != null) {
+            uiScopedContext.uiCloseCleanup();
         }
     }
 

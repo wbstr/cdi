@@ -83,55 +83,9 @@ public abstract class AbstractVaadinContext extends AbstractContext {
 
     protected static class SessionData {
 
-        public static class UIData {
-
-            private int uiId;
-
-            private String activeView = null;
-
-            public UIData(int uiId) {
-                this.uiId = uiId;
-            }
-
-            private int getUiId() {
-                return uiId;
-            }
-
-            public String getActiveView() {
-                return activeView;
-            }
-
-            public void setActiveView(String activeView) {
-                this.activeView = activeView;
-            }
-
-        }
-
         private Map<StorageKey, ContextualStorage> storageMap = new ConcurrentHashMap<StorageKey, ContextualStorage>();
 
-        private Map<Integer, UIData> uiDataMap = new ConcurrentHashMap<Integer, UIData>();
-
         public SessionData() {
-        }
-
-        public UIData getUIData(int uiId) {
-            return getUIData(uiId, false);
-        }
-
-        public UIData getUIData(int uiId, boolean createIfNotExist) {
-            if (uiDataMap.containsKey(uiId)) {
-                return uiDataMap.get(uiId);
-            } else if (createIfNotExist) {
-                UIData data = new UIData(uiId);
-                uiDataMap.put(uiId, data);
-                return data;
-            } else {
-                return null;
-            }
-        }
-
-        private Map<Integer, UIData> getUiDataMap() {
-            return uiDataMap;
         }
 
         public Map<StorageKey, ContextualStorage> getStorageMap() {
@@ -198,7 +152,7 @@ public abstract class AbstractVaadinContext extends AbstractContext {
             return null;
         }
 
-        StorageKey key = getStorageKey(contextual, sessionData);
+        StorageKey key = getStorageKey(contextual);
         if (map.containsKey(key)) {
             return map.get(key);
         } else if (createIfNotExist) {
@@ -212,7 +166,7 @@ public abstract class AbstractVaadinContext extends AbstractContext {
 
     }
 
-    protected abstract StorageKey getStorageKey(Contextual<?> contextual, SessionData sessionData);
+    protected abstract StorageKey getStorageKey(Contextual<?> contextual);
 
     void dropSessionData(VaadinSessionDestroyEvent event) {
         long sessionId = event.getSessionId();
@@ -229,8 +183,8 @@ public abstract class AbstractVaadinContext extends AbstractContext {
         }
     }
 
-    private synchronized void dropUIData(SessionData sessionData, int uiId) {
-        getLogger().fine("Dropping UI data for UI: " + uiId);
+    private synchronized void destroyUIContext(SessionData sessionData, int uiId) {
+        getLogger().fine("Destroying UI context for UI: " + uiId);
 
         for (Entry<StorageKey, ContextualStorage> entry : new ArrayList<Entry<StorageKey, ContextualStorage>>(
                 sessionData.getStorageMap().entrySet())) {
@@ -241,7 +195,6 @@ public abstract class AbstractVaadinContext extends AbstractContext {
                 sessionData.storageMap.remove(key);
             }
         }
-        sessionData.uiDataMap.remove(uiId);
     }
 
     void queueUICloseEvent(VaadinUICloseEvent event) {
@@ -282,7 +235,7 @@ public abstract class AbstractVaadinContext extends AbstractContext {
                 SessionData sessionData = getSessionData(event.getSessionId(),
                         false);
                 if (sessionData != null) {
-                    dropUIData(sessionData, event.getUiId());
+                    destroyUIContext(sessionData, event.getUiId());
                 }
             }
         }
