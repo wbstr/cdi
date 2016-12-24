@@ -46,11 +46,10 @@ public class CDINavigator extends Navigator {
         getLogger().fine(
                 "Changing view from " + event.getOldView() + " to "
                         + event.getNewView());
-        CurrentInstance.set(ViewScopedContext.ViewStorageKey.class, null);
         long sessionId = CDIUtil.getSessionId();
         int uiId = getUI().getUIId();
         String viewName = event.getViewName();
-        activeViewContextHolder.setActiveViewName(event.getViewName());
+        activeViewContextHolder.switchTo(event.getViewName());
         beanManager.fireEvent(new VaadinViewChangeEvent(sessionId, uiId, viewName));
         super.fireAfterViewChange(event);
     }
@@ -58,7 +57,7 @@ public class CDINavigator extends Navigator {
     @Override
     protected void revertNavigation() {
         super.revertNavigation();
-        CurrentInstance.set(ViewScopedContext.ViewStorageKey.class, null);
+        activeViewContextHolder.revert();
     }
 
     private Logger getLogger() {

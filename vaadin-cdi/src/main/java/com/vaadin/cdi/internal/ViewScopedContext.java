@@ -35,7 +35,7 @@ public class ViewScopedContext extends AbstractVaadinContext {
 
     private ActiveViewContextHolder activeViewContextHolder;
 
-    public static class ViewStorageKey extends StorageKey {
+    private static class ViewStorageKey extends StorageKey {
         private final String viewName;
 
         public ViewStorageKey(int uiId, String viewName) {
@@ -91,10 +91,6 @@ public class ViewScopedContext extends AbstractVaadinContext {
         UI currentUI = UI.getCurrent();
         if (currentUI == null) {
             throw new IllegalStateException("Unable to resolve " + contextual + ", current UI not set.");
-        }
-        ViewStorageKey openingViewKey = CurrentInstance.get(ViewStorageKey.class);
-        if (openingViewKey != null) {
-            return openingViewKey;
         }
         String viewName = getActiveViewContextHolder().getActiveViewName();
         if (viewName == null) {

@@ -18,15 +18,10 @@ package com.vaadin.cdi;
 
 import com.vaadin.cdi.access.AccessControl;
 import com.vaadin.cdi.internal.*;
-import com.vaadin.cdi.internal.ViewScopedContext.ViewStorageKey;
-import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
-import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.navigator.ViewProvider;
 import com.vaadin.ui.UI;
-import com.vaadin.util.CurrentInstance;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.annotation.security.DenyAll;
 import javax.annotation.security.RolesAllowed;
@@ -52,6 +47,9 @@ public class CDIViewProvider implements ViewProvider {
 
     @Inject
     private BeanManager beanManager;
+
+    @Inject
+    private ActiveViewContextHolder activeViewContextHolder;
 
     private static ThreadLocal<VaadinViewChangeCleanupEvent> cleanupEvent = new ThreadLocal<VaadinViewChangeCleanupEvent>();
 
@@ -248,8 +246,7 @@ public class CDIViewProvider implements ViewProvider {
 
             cleanupEvent.set(new VaadinViewChangeCleanupEvent(sessionId, currentUI
                     .getUIId()));
-            ViewStorageKey key = new ViewStorageKey(currentUI.getUIId(), viewName);
-            CurrentInstance.set(ViewStorageKey.class, key);
+            activeViewContextHolder.setOpeningView(viewName);
             View view = (View) beanManager.getReference(viewBean,
                     viewBean.getBeanClass(), creationalContext);
 
