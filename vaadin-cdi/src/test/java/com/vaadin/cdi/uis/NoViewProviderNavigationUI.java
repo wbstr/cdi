@@ -16,7 +16,6 @@
 
 package com.vaadin.cdi.uis;
 
-import com.vaadin.cdi.CDINavigator;
 import com.vaadin.cdi.CDIUI;
 import com.vaadin.cdi.internal.Counter;
 import com.vaadin.navigator.Navigator;
@@ -33,8 +32,6 @@ public class NoViewProviderNavigationUI extends UI {
     public static final String NAVIGATION_COUNT = "NoViewProviderNavigationUINavigation";
     @Inject
     InstrumentedView view;
-    @Inject
-    CDINavigator navigator;
     @Inject
     Counter counter;
 
@@ -59,7 +56,7 @@ public class NoViewProviderNavigationUI extends UI {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
                 counter.increment(NAVIGATION_COUNT);
-                navigator.init(NoViewProviderNavigationUI.this, horizontalLayout);
+                Navigator navigator = new Navigator(NoViewProviderNavigationUI.this, horizontalLayout);
                 navigator.addView("instrumentedView", view);
                 navigator.navigateTo("instrumentedView");
             }
