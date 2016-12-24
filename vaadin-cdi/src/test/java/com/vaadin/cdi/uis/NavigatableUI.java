@@ -14,8 +14,6 @@ import com.vaadin.ui.UI;
 public class NavigatableUI extends UI {
     
     @Inject
-    CDIViewProvider viewProvider;
-    @Inject
     CDINavigator navigator;
 
     @Override
@@ -23,7 +21,6 @@ public class NavigatableUI extends UI {
         setSizeFull();
 
         navigator.init(NavigatableUI.this, this);
-        navigator.addProvider(viewProvider);
 
     }
 

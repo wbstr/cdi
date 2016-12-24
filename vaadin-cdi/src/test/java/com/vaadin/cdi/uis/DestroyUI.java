@@ -29,9 +29,6 @@ public class DestroyUI extends UI {
     public static final String DESTROY_COUNT = "uidestroycount";
 
     @Inject
-    CDIViewProvider viewProvider;
-
-    @Inject
     CDINavigator navigator;
 
     @Inject
@@ -91,7 +88,6 @@ public class DestroyUI extends UI {
                     public void showView(View view) {
                     }
                 });
-                navigator.addProvider(viewProvider);
                 navigator.navigateTo("test");
             }
         });

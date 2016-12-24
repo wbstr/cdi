@@ -4,10 +4,7 @@ import com.vaadin.cdi.internal.ActiveViewContextHolder;
 import com.vaadin.cdi.internal.CDIUtil;
 import com.vaadin.cdi.internal.VaadinViewChangeEvent;
 import com.vaadin.cdi.internal.ViewScopedContext;
-import com.vaadin.navigator.NavigationStateManager;
-import com.vaadin.navigator.Navigator;
-import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.navigator.ViewDisplay;
+import com.vaadin.navigator.*;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.SingleComponentContainer;
 import com.vaadin.ui.UI;
@@ -17,6 +14,7 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 import java.util.logging.Logger;
 
+@NormalUIScoped
 public class CDINavigator extends Navigator {
     @Inject
     private BeanManager beanManager;
@@ -24,9 +22,13 @@ public class CDINavigator extends Navigator {
     @Inject
     private ActiveViewContextHolder activeViewContextHolder;
 
+    @Inject
+    private CDIViewProvider cdiViewProvider;
+
     @Override
     public void init(UI ui, NavigationStateManager stateManager, ViewDisplay display) {
         super.init(ui, stateManager, display);
+        addProvider(cdiViewProvider);
     }
 
     public void init(UI ui, ViewDisplay display) {

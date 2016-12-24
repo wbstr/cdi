@@ -38,9 +38,6 @@ public class InstrumentedUI extends UI {
     InstrumentedView view;
 
     @Inject
-    CDIViewProvider viewProvider;
-
-    @Inject
     CDINavigator navigator;
 
     @Inject
@@ -73,7 +70,6 @@ public class InstrumentedUI extends UI {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
                 navigator.init(InstrumentedUI.this, layout);
-                navigator.addProvider(viewProvider);
                 navigator.navigateTo("instrumentedView");
             }
         });

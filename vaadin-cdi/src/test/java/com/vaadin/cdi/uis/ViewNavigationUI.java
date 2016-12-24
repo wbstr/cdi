@@ -23,8 +23,6 @@ public class ViewNavigationUI extends UI {
     private static final String REVERTME = "revertme";
 
     @Inject
-    CDIViewProvider viewProvider;
-    @Inject
     CDINavigator navigator;
     @Inject
     ViewScopedBean bean;
@@ -49,7 +47,6 @@ public class ViewNavigationUI extends UI {
             public void showView(View view) {
             }
         });
-        navigator.addProvider(viewProvider);
         navigator.addViewChangeListener(new ViewChangeListener() {
             @Override
             public boolean beforeViewChange(ViewChangeEvent event) {

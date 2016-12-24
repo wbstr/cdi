@@ -34,8 +34,6 @@ import javax.inject.Inject;
 public class SecondUI extends UI {
 
     public static final String CONSTRUCT_COUNT = "SecondUIConstruct";
-    @Inject
-    CDIViewProvider viewProvider;
 
     @Inject
     Counter counter;
@@ -61,7 +59,6 @@ public class SecondUI extends UI {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
                 navigator.init(SecondUI.this, layout);
-                navigator.addProvider(viewProvider);
                 navigator.navigateTo("danglingView");
             }
         });

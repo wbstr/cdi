@@ -12,14 +12,12 @@ import com.vaadin.ui.UI;
 @CDIUI("")
 public class NonPassivatingUI extends UI {
 
-    @Inject CDIViewProvider provider;
     @Inject
     CDINavigator navigator;
 
     @Override
     protected void init(VaadinRequest request) {
         navigator.init(this,this);
-        navigator.addProvider(provider);
     }
 
 }

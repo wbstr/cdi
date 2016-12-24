@@ -35,8 +35,6 @@ public class ParameterizedNavigationUI extends UI {
 
     public static final String CONSTRUCT_COUNT = "ParameterizedNavigationUIConstruct";
     @Inject
-    CDIViewProvider viewProvider;
-    @Inject
     CDINavigator navigator;
 
     @Inject
@@ -61,7 +59,6 @@ public class ParameterizedNavigationUI extends UI {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
                 navigator.init(ParameterizedNavigationUI.this, layout);
-                navigator.addProvider(viewProvider);
                 navigator.navigateTo(navigateTo);
             }
         });

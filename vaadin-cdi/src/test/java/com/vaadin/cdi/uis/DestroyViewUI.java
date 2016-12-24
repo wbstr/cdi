@@ -30,8 +30,6 @@ public class DestroyViewUI extends UI {
     public static final String NAVIGATE_ERROR_BTN_ID = "error";
 
     @Inject
-    CDIViewProvider viewProvider;
-    @Inject
     CDINavigator navigator;
     @Inject
     Counter counter;
@@ -66,7 +64,6 @@ public class DestroyViewUI extends UI {
             public void showView(View view) {
             }
         });
-        navigator.addProvider(viewProvider);
         navigator.setErrorView(ErrorView.class);
 
         Button viewNavigateBtn = new Button("navigate dependent");
