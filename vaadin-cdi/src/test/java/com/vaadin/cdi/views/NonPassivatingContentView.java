@@ -46,6 +46,7 @@ public class NonPassivatingContentView extends CustomComponent implements View {
         label.setId(label_id);
         
         ViewScopedContext context = new ViewScopedContext(bm);
+        context.init(bm);
         
         // A dummy CreationalContext to avoid using CDI implementation specific
         // classes

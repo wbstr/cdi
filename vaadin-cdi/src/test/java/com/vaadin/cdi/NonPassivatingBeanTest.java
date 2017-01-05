@@ -13,7 +13,6 @@ import org.junit.Test;
 
 import com.vaadin.cdi.internal.Conventions;
 import com.vaadin.cdi.internal.NonPassivatingBean;
-import com.vaadin.cdi.internal.ViewScopedContext;
 import com.vaadin.cdi.uis.NonPassivatingUI;
 import com.vaadin.cdi.views.NonPassivatingContentView;
 

@@ -48,9 +48,6 @@ public class CDIViewProvider implements ViewProvider {
     @Inject
     private BeanManager beanManager;
 
-    @Inject
-    private ActiveViewContextHolder activeViewContextHolder;
-
     private static ThreadLocal<VaadinViewChangeCleanupEvent> cleanupEvent = new ThreadLocal<VaadinViewChangeCleanupEvent>();
 
     @Inject
@@ -246,7 +243,6 @@ public class CDIViewProvider implements ViewProvider {
 
             cleanupEvent.set(new VaadinViewChangeCleanupEvent(sessionId, currentUI
                     .getUIId()));
-            activeViewContextHolder.setOpeningView(viewName);
             View view = (View) beanManager.getReference(viewBean,
                     viewBean.getBeanClass(), creationalContext);
 
