@@ -16,7 +16,6 @@ import static org.junit.Assert.assertThat;
 public class ViewDestroyTest extends AbstractManagedCDIIntegrationTest {
 
     private String uiId;
-    private String viewUri;
 
     @Deployment(testable = false)
     public static WebArchive deployment() {
@@ -34,12 +33,6 @@ public class ViewDestroyTest extends AbstractManagedCDIIntegrationTest {
         assertViewDestroyCounts(0);
 
         clickAndWait(DestroyViewUI.CLOSE_BTN_ID);
-        assertViewDestroyCounts(0);
-
-        Thread.sleep(5000); //AbstractVaadinContext.CLEANUP_DELAY
-
-        //open new UI. Navigating to home view on load triggers cleanup.
-        openWindow(viewUri);
         assertViewDestroyCounts(1);
     }
 
@@ -73,7 +66,7 @@ public class ViewDestroyTest extends AbstractManagedCDIIntegrationTest {
     }
 
     private void loadView(final String view) throws MalformedURLException {
-        viewUri = Conventions.deriveMappingForUI(DestroyViewUI.class) + "#!" + view;
+        String viewUri = Conventions.deriveMappingForUI(DestroyViewUI.class) + "#!" + view;
         openWindow(viewUri);
         uiId = findElement(DestroyViewUI.UIID_ID).getText();
     }

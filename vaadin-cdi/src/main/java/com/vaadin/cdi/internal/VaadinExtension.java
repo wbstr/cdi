@@ -98,38 +98,26 @@ public class VaadinExtension implements Extension {
         afterBeanDiscovery.addContext(new ContextWrapper(uiScopedContext,
                 NormalUIScoped.class));
         getLogger().info("UIScopedContext registered for Vaadin CDI");
+
         viewScopedContext = new ViewScopedContext(beanManager);
         afterBeanDiscovery.addContext(new ContextWrapper(viewScopedContext,
                 ViewScoped.class));
         afterBeanDiscovery.addContext(new ContextWrapper(viewScopedContext,
                 NormalViewScoped.class));
         getLogger().info("ViewScopedContext registered for Vaadin CDI");
+
+        VaadinSessionScopedContext vaadinSessionScopedContext = new VaadinSessionScopedContext(beanManager);
+        afterBeanDiscovery.addContext(vaadinSessionScopedContext);
+        getLogger().info("VaadinSessionScopedContext registered for Vaadin CDI");
     }
 
     public void initializeContexts(@Observes AfterDeploymentValidation adv, BeanManager beanManager) {
+        uiScopedContext.init(beanManager);
         viewScopedContext.init(beanManager);
     }
 
     private static Logger getLogger() {
         return Logger.getLogger(VaadinExtension.class.getCanonicalName());
-    }
-
-    private void sessionClose(@Observes VaadinSessionDestroyEvent event) {
-        if (uiScopedContext != null) {
-            uiScopedContext.dropSessionData(event);
-        }
-    }
-
-    private void uiClose(@Observes VaadinUICloseEvent event) {
-        if (uiScopedContext != null) {
-            uiScopedContext.queueUICloseEvent(event);
-        }
-    }
-
-    private void requestEnd(@Observes VaadinViewChangeCleanupEvent event) {
-        if (uiScopedContext != null) {
-            uiScopedContext.uiCloseCleanup();
-        }
     }
 
 }

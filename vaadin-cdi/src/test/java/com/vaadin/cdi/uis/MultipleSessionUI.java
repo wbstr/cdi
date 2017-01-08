@@ -49,7 +49,8 @@ public class MultipleSessionUI extends UI {
         Map<Class<?>, CurrentInstance> oldCurrentInstance = CurrentInstance
                 .setCurrent(otherSession);
         otherSession.getLockInstance().lock();
-        // proxy looks up actual bean based on session and UI ID
+        UI.setCurrent(this);
+        // proxy looks up actual bean based on current session and UI
         Label otherSessionLabel = new Label("" + bean.getBeanId());
         otherSessionLabel.setId(OTHERSESSION_ID);
         layout.addComponent(otherSessionLabel);

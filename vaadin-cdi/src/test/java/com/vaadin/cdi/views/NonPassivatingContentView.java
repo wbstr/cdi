@@ -10,14 +10,12 @@ import javax.inject.Inject;
 
 import com.vaadin.cdi.CDIView;
 import com.vaadin.cdi.ViewScoped;
-import com.vaadin.cdi.internal.CDIUtil;
 import com.vaadin.cdi.internal.NonPassivatingBean;
 import com.vaadin.cdi.internal.ViewScopedContext;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
 @CDIView("")

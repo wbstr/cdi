@@ -15,7 +15,6 @@ import static org.junit.Assert.assertThat;
 
 public class UIDestroyTest extends AbstractManagedCDIIntegrationTest {
 
-    private String uri;
     private String uiId;
 
     @Deployment(testable = false)
@@ -28,27 +27,15 @@ public class UIDestroyTest extends AbstractManagedCDIIntegrationTest {
     @Before
     public void setUp() throws IOException {
         resetCounts();
-        uri = Conventions.deriveMappingForUI(DestroyUI.class);
+        String uri = Conventions.deriveMappingForUI(DestroyUI.class);
         openWindow(uri);
         uiId = findElement(DestroyUI.UIID_ID).getText();
         assertDestroyCount(0);
     }
 
     @Test
-    public void testViewChangeTriggersClosedUIDestroy() throws Exception {
-        //close first UI
+    public void testUiCloseTriggersDestroy() throws Exception {
         clickAndWait(DestroyUI.CLOSE_BTN_ID);
-
-        //open new UI
-        openWindow(uri);
-        assertDestroyCount(0);
-
-        Thread.sleep(5000); //AbstractVaadinContext.CLEANUP_DELAY
-
-        //ViewChange event triggers a cleanup
-        clickAndWait(DestroyUI.NAVIGATE_BTN_ID);
-
-        //first UI cleaned up
         assertDestroyCount(1);
     }
 

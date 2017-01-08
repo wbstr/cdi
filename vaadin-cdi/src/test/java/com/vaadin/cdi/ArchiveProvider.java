@@ -38,17 +38,17 @@ public class ArchiveProvider {
     public final static Class FRAMEWORK_CLASSES[] = new Class[] {
             AccessControl.class, CDIUIProvider.class, CDIViewProvider.class, CDINavigator.class,
             ContextDeployer.class, JaasAccessControl.class,
-            UIScopedContext.class, CDIUI.class,
+            UIScopedContext.class, UIContextualStorageManager.class, CDIUI.class,
             ViewScopedContext.class, ViewScopedContext.class, ViewContextualStorageManager.class,
-            CDIView.class, VaadinSessionDestroyEvent.class,
-            VaadinUICloseEvent.class, AbstractVaadinContext.class,
-            VaadinViewChangeCleanupEvent.class, VaadinCDIServlet.class,
+            VaadinSessionScopedContext.class,
+            CDIView.class, VaadinCDIServlet.class,
             VaadinCDIServletService.class,
             CDIUIProvider.DetachListenerImpl.class,
             Conventions.class, InconsistentDeploymentException.class, AnnotationUtil.class,
             VaadinExtension.class, VaadinContextualStorage.class, ContextWrapper.class,
-            CDIUtil.class, URLMapping.class,
+            URLMapping.class,
             UIScoped.class, ViewScoped.class, NormalUIScoped.class, NormalViewScoped.class,
+            VaadinSessionScoped.class,
             CounterFilter.class, Counter.class};
     public static WebArchive createWebArchive(String warName, Class... classes) {
         return createWebArchive(warName, true, classes);

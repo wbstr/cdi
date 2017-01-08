@@ -48,8 +48,6 @@ public class CDIViewProvider implements ViewProvider {
     @Inject
     private BeanManager beanManager;
 
-    private static ThreadLocal<VaadinViewChangeCleanupEvent> cleanupEvent = new ThreadLocal<VaadinViewChangeCleanupEvent>();
-
     @Inject
     private AccessControl accessControl;
     private transient CreationalContext<?> dependentViewCreationalContext;
@@ -205,8 +203,6 @@ public class CDIViewProvider implements ViewProvider {
                 "Attempting to retrieve view with name \"{0}\"",
                 viewName);
 
-        // current session and UI
-        long sessionId = CDIUtil.getSessionId();
         UI currentUI = UI.getCurrent();
 
         if (currentUI == null) {
@@ -241,8 +237,6 @@ public class CDIViewProvider implements ViewProvider {
                     "Created new creational context for current view {0}",
                     creationalContext);
 
-            cleanupEvent.set(new VaadinViewChangeCleanupEvent(sessionId, currentUI
-                    .getUIId()));
             View view = (View) beanManager.getReference(viewBean,
                     viewBean.getBeanClass(), creationalContext);
 
@@ -282,14 +276,6 @@ public class CDIViewProvider implements ViewProvider {
         }
 
         return null;
-    }
-
-    public static VaadinViewChangeCleanupEvent getCleanupEvent() {
-        return cleanupEvent.get();
-    }
-
-    public static void removeCleanupEvent() {
-        cleanupEvent.remove();
     }
 
     private static Logger getLogger() {
