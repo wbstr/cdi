@@ -8,6 +8,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 
 public class SessionContextTest extends AbstractManagedCDIIntegrationTest {
@@ -18,7 +19,8 @@ public class SessionContextTest extends AbstractManagedCDIIntegrationTest {
     }
 
     @Before
-    public void setUp() throws MalformedURLException {
+    public void setUp() throws IOException {
+        resetCounts();
         String uri = Conventions.deriveMappingForUI(SessionUI.class);
         openWindow(uri);
     }
@@ -32,9 +34,32 @@ public class SessionContextTest extends AbstractManagedCDIIntegrationTest {
     }
 
     @Test
-    public void testSessionCloseDestroysSessionContext() throws Exception {
+    public void testVaadinSessionCloseDestroysSessionContext() throws Exception {
         Assert.assertEquals(0, getCount(SessionUI.SessionScopedBean.DESTROY_COUNT));
         clickAndWait(SessionUI.INVALIDATEBTN_ID);
         Assert.assertEquals(1, getCount(SessionUI.SessionScopedBean.DESTROY_COUNT));
+    }
+
+    @Test
+    public void testHttpSessionCloseDestroysSessionContext() throws Exception {
+        Assert.assertEquals(0, getCount(SessionUI.SessionScopedBean.DESTROY_COUNT));
+        clickAndWait(SessionUI.HTTP_INVALIDATEBTN_ID);
+        Assert.assertEquals(1, getCount(SessionUI.SessionScopedBean.DESTROY_COUNT));
+    }
+
+    @Test
+    public void testHttpSessionExpirationDestroysSessionContext() throws Exception {
+        Assert.assertEquals(0, getCount(SessionUI.SessionScopedBean.DESTROY_COUNT));
+        clickAndWait(SessionUI.EXPIREBTN_ID);
+        boolean destroyed = false;
+        for (int i=0; i<60; i++) {
+            Thread.sleep(1000);
+            if (getCount(SessionUI.SessionScopedBean.DESTROY_COUNT) > 0) {
+                System.out.printf("session expired after %d seconds\n", i);
+                destroyed = true;
+                break;
+            }
+        }
+        Assert.assertTrue(destroyed);
     }
 }
