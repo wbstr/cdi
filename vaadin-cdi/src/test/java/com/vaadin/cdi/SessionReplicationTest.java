@@ -17,9 +17,7 @@ import org.junit.experimental.categories.Category;
 import java.net.URL;
 
 @Category(ClusterTestCategory.class)
-public class ClusteringTest  extends AbstractCDIIntegrationTest {
-
-    private static WebArchive ARCHIVE;
+public class SessionReplicationTest extends AbstractCDIIntegrationTest {
 
     @Deployment(name = "node1", testable = false)
     @TargetsContainer("node-1")
@@ -42,18 +40,15 @@ public class ClusteringTest  extends AbstractCDIIntegrationTest {
     private URL url2;
 
     public static WebArchive getArchive() {
-        if (ARCHIVE == null) {
-            ARCHIVE = ArchiveProvider.createWebArchive("replication",
-                    SessionReplicationUI.class);
-            WebAppDescriptor webAppDescriptor = Descriptors.create(WebAppDescriptor.class).distributable();
-            ARCHIVE.addAsWebInfResource(new StringAsset(webAppDescriptor.exportAsString()),
-                    webAppDescriptor.getDescriptorName());
-        }
-        return ARCHIVE;
+        WebArchive archive = ArchiveProvider.createWebArchive("replication",
+                SessionReplicationUI.class);
+        WebAppDescriptor webAppDescriptor = Descriptors.create(WebAppDescriptor.class).distributable();
+        return archive.addAsWebInfResource(new StringAsset(webAppDescriptor.exportAsString()),
+                webAppDescriptor.getDescriptorName());
     }
 
     @Test
-    public void testSessionContextReplication() throws Exception {
+    public void testSessionReplication() throws Exception {
         String path = Conventions.deriveMappingForUI(SessionReplicationUI.class);
         firstWindow.navigate().to(url1.toString() + path);
         waitForClient();
@@ -68,6 +63,7 @@ public class ClusteringTest  extends AbstractCDIIntegrationTest {
     private void assertSessionLabelsEquals(String expected) {
         Assert.assertEquals(expected, findElement(SessionReplicationUI.HTTPVALUELABEL_ID).getText());
         Assert.assertEquals(expected, findElement(SessionReplicationUI.VAADINVALUELABEL_ID).getText());
+        Assert.assertEquals(expected, findElement(SessionReplicationUI.CDIVALUELABEL_ID).getText());
     }
 
 }
