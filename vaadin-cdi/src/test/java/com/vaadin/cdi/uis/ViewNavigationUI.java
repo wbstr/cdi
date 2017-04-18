@@ -12,6 +12,7 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.ContextNotActiveException;
 import javax.inject.Inject;
 
 @CDIUI("")
@@ -26,6 +27,8 @@ public class ViewNavigationUI extends UI {
     public static final String CHANGEDSUCCESS_VALUE = "successother";
     public static final String SUCCESSVIEW_VALUE = "successview";
     public static final String CHANGE_VALUE_BTN_ID = "othervalue";
+    public static final String BEFORE_VALUE_LABEL_ID = "beforevaluelabel";
+    public static final String AFTER_VALUE_LABEL_ID = "aftervaluelabel";
 
     @Inject
     CDINavigator navigator;
@@ -47,6 +50,14 @@ public class ViewNavigationUI extends UI {
         value.setId(VALUE_LABEL_ID);
         layout.addComponent(value);
 
+        final Label beforeValue = new Label();
+        beforeValue.setId(BEFORE_VALUE_LABEL_ID);
+        layout.addComponent(beforeValue);
+
+        final Label afterValue = new Label();
+        afterValue.setId(AFTER_VALUE_LABEL_ID);
+        layout.addComponent(afterValue);
+
         navigator.init(this, new ViewDisplay() {
             @Override
             public void showView(View view) {
@@ -55,11 +66,26 @@ public class ViewNavigationUI extends UI {
         navigator.addViewChangeListener(new ViewChangeListener() {
             @Override
             public boolean beforeViewChange(ViewChangeEvent event) {
-                return !event.getViewName().equals(REVERTME);
+                if (event.getViewName().equals(REVERTME)) {
+                    return false;
+                } else {
+                    if (event.getOldView() != null) {
+                        beforeValue.setValue(bean.getValue());
+                    } else {
+                        // given no oldView, we have no view context during beforeViewChange
+                        try {
+                            bean.getValue();
+                        } catch (ContextNotActiveException e) {
+                            beforeValue.setValue(e.getClass().getSimpleName());
+                        }
+                    }
+                    return true;
+                }
             }
 
             @Override
             public void afterViewChange(ViewChangeEvent event) {
+                afterValue.setValue(bean.getValue());
             }
         });
 
