@@ -1,8 +1,10 @@
 package com.vaadin.cdi.uis;
 
-import com.vaadin.cdi.*;
+import com.vaadin.cdi.CDINavigator;
+import com.vaadin.cdi.CDIUI;
+import com.vaadin.cdi.CDIView;
+import com.vaadin.cdi.ViewScoped;
 import com.vaadin.cdi.internal.Counter;
-import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.navigator.ViewDisplay;
@@ -14,7 +16,6 @@ import com.vaadin.ui.VerticalLayout;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import java.io.Serializable;
 
@@ -22,12 +23,12 @@ import java.io.Serializable;
 public class DestroyViewUI extends UI {
     public static final String CLOSE_BTN_ID = "close";
     public static final String LABEL_ID = "label";
-    public static final String NAVIGATE_DEPENDENT_BTN_ID = "navigatedep";
     public static final String NAVIGATE_VIEW_BTN_ID = "navigateview";
     public static final String UIID_ID = "UIID";
-    public static final String DEPENDENT_VIEW = "dependent";
     public static final String VIEWSCOPED_VIEW = "viewscoped";
+    public static final String OTHER_VIEW = "other";
     public static final String NAVIGATE_ERROR_BTN_ID = "error";
+    public static final String NAVIGATE_OTHER_BTN_ID = "other";
 
     @Inject
     CDINavigator navigator;
@@ -66,25 +67,25 @@ public class DestroyViewUI extends UI {
         });
         navigator.setErrorView(ErrorView.class);
 
-        Button viewNavigateBtn = new Button("navigate dependent");
-        viewNavigateBtn.setId(NAVIGATE_DEPENDENT_BTN_ID);
-        viewNavigateBtn.addClickListener(new Button.ClickListener() {
+        Button otherNavigateBtn = new Button("navigate other");
+        otherNavigateBtn.setId(NAVIGATE_OTHER_BTN_ID);
+        otherNavigateBtn.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                navigator.navigateTo(DEPENDENT_VIEW);
+                navigator.navigateTo(OTHER_VIEW);
             }
         });
-        layout.addComponent(viewNavigateBtn);
+        layout.addComponent(otherNavigateBtn);
 
-        Button dependentNavigateBtn = new Button("navigate view");
-        dependentNavigateBtn.setId(NAVIGATE_VIEW_BTN_ID);
-        dependentNavigateBtn.addClickListener(new Button.ClickListener() {
+        Button viewNavigateBtn = new Button("navigate view");
+        viewNavigateBtn.setId(NAVIGATE_VIEW_BTN_ID);
+        viewNavigateBtn.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 navigator.navigateTo(VIEWSCOPED_VIEW);
             }
         });
-        layout.addComponent(dependentNavigateBtn);
+        layout.addComponent(viewNavigateBtn);
 
         Button errorNavigateBtn = new Button("navigate error");
         errorNavigateBtn.setId(NAVIGATE_ERROR_BTN_ID);
@@ -122,6 +123,13 @@ public class DestroyViewUI extends UI {
         }
     }
 
+    @CDIView(value = OTHER_VIEW)
+    public static class OtherView implements View {
+        @Override
+        public void enter(ViewChangeListener.ViewChangeEvent viewChangeEvent) {
+        }
+    }
+
     @ViewScoped
     public static class ViewScopedBean implements Serializable {
         public static final String DESTROY_COUNT = "viewbeandestroy";
@@ -141,27 +149,6 @@ public class DestroyViewUI extends UI {
             uiId = UI.getCurrent().getUIId();
         }
 
-    }
-
-    @CDIView(DEPENDENT_VIEW)
-    @Dependent
-    public static class DependentView implements View {
-        public static final String DESTROY_COUNT = "DependentViewDestroy";
-
-        @Inject
-        Counter counter;
-
-        int uiId;
-
-        @PreDestroy
-        public void destroy() {
-            counter.increment(DESTROY_COUNT + uiId);
-        }
-
-        @Override
-        public void enter(ViewChangeListener.ViewChangeEvent event) {
-            uiId = UI.getCurrent().getUIId();
-        }
     }
 
 

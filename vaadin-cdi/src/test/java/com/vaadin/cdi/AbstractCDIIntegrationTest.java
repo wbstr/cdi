@@ -1,7 +1,6 @@
 package com.vaadin.cdi;
 
 import com.google.common.base.Predicate;
-import com.vaadin.cdi.uis.RootUI;
 import org.jboss.arquillian.container.test.api.Deployer;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.drone.api.annotation.Drone;
@@ -16,12 +15,8 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import javax.enterprise.inject.New;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
 
 @RunWith(Arquillian.class)
 @RunAsClient
@@ -40,8 +35,6 @@ abstract public class AbstractCDIIntegrationTest {
     protected static final By NAVIGATE_BUTTON = By.id("navigate");
     protected static final String INSTRUMENTED_UI_URI = "instrumentedUI";
     private static final String SECOND_UI_URI = "secondUI";
-    protected static final String INSTRUMENTED_VIEW_URI = INSTRUMENTED_UI_URI
-                + "/#!instrumentedView";
     protected static final String DANGLING_VIEW_URI = SECOND_UI_URI
                 + "/#!danglingView";
 

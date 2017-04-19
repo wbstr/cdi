@@ -18,9 +18,7 @@ package com.vaadin.cdi.uis;
 
 import com.vaadin.cdi.CDINavigator;
 import com.vaadin.cdi.CDIUI;
-import com.vaadin.cdi.CDIViewProvider;
 import com.vaadin.cdi.internal.Counter;
-import com.vaadin.navigator.Navigator;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
@@ -34,8 +32,6 @@ import javax.inject.Inject;
 public class InstrumentedUI extends UI {
 
     public static final String CONSTRUCT_COUNT = "InstrumentedUIConstruct";
-    @Inject
-    InstrumentedView view;
 
     @Inject
     CDINavigator navigator;
