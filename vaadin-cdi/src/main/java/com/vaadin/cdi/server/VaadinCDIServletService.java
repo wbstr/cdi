@@ -65,4 +65,13 @@ public class VaadinCDIServletService extends VaadinServletService {
                 .getCanonicalName());
     }
 
+    @Override
+    protected void unlockSession(WrappedSession wrappedSession) {
+        if (wrappedSession != null) {
+            // workaround for https://github.com/vaadin/framework/issues/7535
+            // Tomcat DeltaManager need it
+            writeToHttpSession(wrappedSession, readFromHttpSession(wrappedSession));
+        }
+        super.unlockSession(wrappedSession);
+    }
 }
