@@ -13,6 +13,14 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Manage and store ContextualStorage for UI context.
+ * This class is responsible for
+ * - selecting the active UI context
+ * - creating, and providing the ContextualStorage for it
+ * - destroying contextual instances
+ */
+
 @VaadinSessionScoped
 public class UIContextualStorageManager implements Serializable {
 
