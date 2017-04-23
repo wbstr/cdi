@@ -18,9 +18,11 @@ package com.vaadin.cdi;
 
 import java.lang.annotation.Annotation;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.inject.AmbiguousResolutionException;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.spi.Bean;
@@ -29,13 +31,12 @@ import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 
 import com.vaadin.cdi.internal.*;
+import com.vaadin.server.*;
 import com.vaadin.server.ClientConnector.DetachEvent;
 import com.vaadin.server.ClientConnector.DetachListener;
-import com.vaadin.server.DefaultUIProvider;
-import com.vaadin.server.UIClassSelectionEvent;
-import com.vaadin.server.UICreateEvent;
-import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.UI;
+import com.vaadin.util.CurrentInstance;
+import org.apache.deltaspike.core.util.ContextUtils;
 
 @ApplicationScoped
 public class CDIUIProvider extends DefaultUIProvider {
@@ -57,7 +58,19 @@ public class CDIUIProvider extends DefaultUIProvider {
         public void detach(DetachEvent event) {
             Object source = event.getSource();
             if (source instanceof UI) {
-                uiContextualStorageManager.destroy(((UI) source).getUIId());
+                int uiId = ((UI) source).getUIId();
+                if (VaadinSessionScopedContext.guessContextIsUndeployed()) {
+                    // Happens on tomcat when it expires sessions upon undeploy.
+                    // We would get ContextNotActiveException on uiContextualStorageManager.destroy
+                    getLogger().log(
+                            Level.WARNING,
+                            "VaadinSessionScoped context does not exist. " +
+                                    "Maybe application is undeployed." +
+                                    " Can''t destroy UI context for UI {0}.",
+                            uiId);
+                    return;
+                }
+                uiContextualStorageManager.destroy(uiId);
             }
         }
     }

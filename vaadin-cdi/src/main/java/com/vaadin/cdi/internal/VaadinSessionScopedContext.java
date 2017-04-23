@@ -1,13 +1,17 @@
 package com.vaadin.cdi.internal;
 
 import com.vaadin.cdi.VaadinSessionScoped;
+import com.vaadin.cdi.server.VaadinCDIServletService;
 import com.vaadin.server.VaadinSession;
+import org.apache.deltaspike.core.util.ContextUtils;
 import org.apache.deltaspike.core.util.context.AbstractContext;
 import org.apache.deltaspike.core.util.context.ContextualStorage;
 
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.inject.spi.BeanManager;
 import java.lang.annotation.Annotation;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class VaadinSessionScopedContext extends AbstractContext {
     private final BeanManager beanManager;
@@ -49,4 +53,12 @@ public class VaadinSessionScopedContext extends AbstractContext {
             AbstractContext.destroyAllActive(storage);
         }
     }
+
+    public static boolean guessContextIsUndeployed() {
+        // Given there is a current VaadinSession, we should have an active context,
+        // except we get here after the application is undeployed.
+        return (VaadinSession.getCurrent() != null
+                && !ContextUtils.isContextActive(VaadinSessionScoped.class));
+    }
+
 }

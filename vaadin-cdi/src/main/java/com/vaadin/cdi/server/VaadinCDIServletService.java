@@ -15,12 +15,15 @@
  */
 package com.vaadin.cdi.server;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.vaadin.cdi.CDIUIProvider;
+import com.vaadin.cdi.VaadinSessionScoped;
 import com.vaadin.cdi.internal.VaadinSessionScopedContext;
 import com.vaadin.server.*;
 import org.apache.deltaspike.core.api.provider.BeanProvider;
+import org.apache.deltaspike.core.util.ContextUtils;
 
 /**
  * Servlet service implementation for Vaadin CDI.
@@ -44,6 +47,15 @@ public class VaadinCDIServletService extends VaadinServletService {
         @Override
         public void sessionDestroy(SessionDestroyEvent event) {
             getLogger().fine("VaadinSessionScopedContext destroy");
+            if (VaadinSessionScopedContext.guessContextIsUndeployed()) {
+                // Happens on tomcat when it expires sessions upon undeploy.
+                // beanManager.getPassivationCapableBean returns null for passivation id,
+                // so we would get an NPE from AbstractContext.destroyAllActive
+                getLogger().warning("VaadinSessionScoped context does not exist. " +
+                                "Maybe application is undeployed." +
+                                " Can't destroy VaadinSessionScopedContext.");
+                return;
+            }
             VaadinSessionScopedContext.destroy(event.getSession());
         }
 
