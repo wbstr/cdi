@@ -12,7 +12,6 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 @VaadinSessionScoped
 public class UIContextualStorageManager implements Serializable {
@@ -32,7 +31,7 @@ public class UIContextualStorageManager implements Serializable {
 
         ContextualStorage storage = storageMap.get(uiId);
         if (storage == null && createIfNotExist) {
-            storage = new VaadinContextualStorage(beanManager, false);
+            storage = new VaadinContextualStorage(beanManager);
             storageMap.put(uiId, storage);
         }
 

@@ -1,7 +1,6 @@
 package com.vaadin.cdi.internal;
 
 import com.vaadin.cdi.VaadinSessionScoped;
-import com.vaadin.cdi.server.VaadinCDIServletService;
 import com.vaadin.server.VaadinSession;
 import org.apache.deltaspike.core.util.ContextUtils;
 import org.apache.deltaspike.core.util.context.AbstractContext;
@@ -10,8 +9,6 @@ import org.apache.deltaspike.core.util.context.ContextualStorage;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.inject.spi.BeanManager;
 import java.lang.annotation.Annotation;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class VaadinSessionScopedContext extends AbstractContext {
     private final BeanManager beanManager;
@@ -27,7 +24,7 @@ public class VaadinSessionScopedContext extends AbstractContext {
         VaadinSession session = VaadinSession.getCurrent();
         ContextualStorage storage = findContextualStorage(session);
         if (storage == null && createIfNotExist) {
-            storage = new VaadinContextualStorage(beanManager, false);
+            storage = new VaadinContextualStorage(beanManager);
             session.setAttribute(ATTRIBUTE_NAME, storage);
         }
         return storage;
