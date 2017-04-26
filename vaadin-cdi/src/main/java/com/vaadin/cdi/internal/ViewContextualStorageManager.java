@@ -15,9 +15,6 @@ import java.io.Serializable;
  * - selecting the active view context
  * - creating, and providing the ContextualStorage for it
  * - destroying contextual instances
- *
- * Concurrency handling ignored intentionally.
- * Locking of VaadinSession is the responsibility of Vaadin Framework.
  */
 @NormalUIScoped
 public class ViewContextualStorageManager implements Serializable {
