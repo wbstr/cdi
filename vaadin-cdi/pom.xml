@@ -2,9 +2,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.vaadin</groupId>
-    <artifactId>vaadin-cdi</artifactId>
-    <version>2.0-SNAPSHOT</version>
+    <groupId>com.wcs.vaadin</groupId>
+    <artifactId>vaadin-cdi-alt</artifactId>
+    <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -235,8 +235,8 @@
                             <systemPropertyVariables>
                                 <arquillian.launch>tomee-cluster</arquillian.launch>
                             </systemPropertyVariables>
-                            <groups>com.vaadin.cdi.ClusterTestCategory</groups>
-                            <excludedGroups>com.vaadin.cdi.NoneTestCategory</excludedGroups>
+                            <groups>com.wcs.vaadin.cdi.ClusterTestCategory</groups>
+                            <excludedGroups>com.wc.vaadin.cdi.NoneTestCategory</excludedGroups>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -299,8 +299,8 @@
                                 <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
                             </systemPropertyVariables>
                             <redirectTestOutputToFile>false</redirectTestOutputToFile>
-                            <groups>com.vaadin.cdi.ClusterTestCategory</groups>
-                            <excludedGroups>com.vaadin.cdi.NoneTestCategory</excludedGroups>
+                            <groups>com.wcs.vaadin.cdi.ClusterTestCategory</groups>
+                            <excludedGroups>com.wcs.vaadin.cdi.NoneTestCategory</excludedGroups>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -617,7 +617,7 @@
                         <javax.el.ExpressionFactory>org.apache.el.ExpressionFactoryImpl</javax.el.ExpressionFactory>
                     </systemPropertyVariables>
                     <redirectTestOutputToFile>false</redirectTestOutputToFile>
-                    <excludedGroups>com.vaadin.cdi.ClusterTestCategory</excludedGroups>
+                    <excludedGroups>com.wcs.vaadin.cdi.ClusterTestCategory</excludedGroups>
                 </configuration>
             </plugin>
             <plugin>
