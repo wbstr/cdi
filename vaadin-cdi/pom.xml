@@ -23,19 +23,11 @@
         <!-- ZIP Manifest fields -->
         <Implementation-Version>${project.version}</Implementation-Version>
         <!-- Must not change this because of the Directory -->
-        <Implementation-Title>Vaadin CDI</Implementation-Title>
+        <Implementation-Title>Vaadin AltCDI</Implementation-Title>
         <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
         <Vaadin-License-Title>Apache License 2.0</Vaadin-License-Title>
-        <Vaadin-Addon>vaadin-cdi-${project.version}.jar</Vaadin-Addon>
+        <Vaadin-Addon>vaadin-alt-cdi-${project.version}.jar</Vaadin-Addon>
     </properties>
-
-    <distributionManagement>
-        <snapshotRepository>
-            <id>vaadin-snapshots</id>
-            <name>Vaadin snapshot repository</name>
-            <url>http://oss.sonatype.org/content/repositories/vaadin-snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
 
     <repositories>
         <repository>
@@ -44,22 +36,22 @@
         </repository>
     </repositories>
 
-    <name>vaadin-cdi</name>
-    <url>http://vaadin.com</url>
-    <description>Provides CDI integration for Vaadin projects</description>
+    <name>vaadin-alt-cdi</name>
+    <url>https://github.com/wbstr/vaadin-alt-cdi</url>
+    <description>Provides alternative CDI integration for Vaadin projects</description>
 
     <organization>
-        <name>Vaadin Ltd</name>
-        <url>http://vaadin.com</url>
+        <name>Webstar Csoport Kft.</name>
+        <url>http://www.webstar.hu</url>
     </organization>
     <scm>
-        <url>https://github.com/vaadin/cdi</url>
-        <connection>git:https://github.com/vaadin/cdi.git</connection>
-        <developerConnection>git:https://github.com/vaadin/cdi.git</developerConnection>
+        <url>https://github.com/wbstr/vaadin-alt-cdi</url>
+        <connection>git:https://github.com/wbstr/vaadin-alt-cdi.git</connection>
+        <developerConnection>git:https://github.com/wbstr/vaadin-alt-cdi.git</developerConnection>
     </scm>
     <issueManagement>
-        <system>trac</system>
-        <url>http://dev.vaadin.com/</url>
+        <system>github</system>
+        <url>https://github.com/wbstr/vaadin-alt-cdi/issues</url>
     </issueManagement>
 
     <developers>
@@ -77,6 +69,9 @@
         </developer>
         <developer>
             <name>Juuso Valli</name>
+        </developer>
+        <developer>
+            <name>Kimmel Tamás</name>
         </developer>
     </developers>
     <licenses>
@@ -117,38 +112,6 @@
                                 <phase>package</phase>
                                 <goals>
                                     <goal>jar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>properties-maven-plugin</artifactId>
-                        <version>1.0-alpha-2</version>
-                        <executions>
-                            <execution>
-                                <phase>initialize</phase>
-                                <goals>
-                                    <goal>read-project-properties</goal>
-                                </goals>
-                                <configuration>
-                                    <files>
-                                        <file>${gpg.passphrase.file}</file>
-                                    </files>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.4</version>
-                        <executions>
-                            <execution>
-                                <id>sign-artifacts</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>sign</goal>
                                 </goals>
                             </execution>
                         </executions>
