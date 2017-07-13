@@ -46,8 +46,8 @@
     </organization>
     <scm>
         <url>https://github.com/wbstr/vaadin-alt-cdi</url>
-        <connection>git:https://github.com/wbstr/vaadin-alt-cdi.git</connection>
-        <developerConnection>git:https://github.com/wbstr/vaadin-alt-cdi.git</developerConnection>
+        <connection>scm:git:git@github.com:wbstr/vaadin-alt-cdi.git</connection>
+        <developerConnection>scm:git:git@github.com:wbstr/vaadin-alt-cdi.git</developerConnection>
     </scm>
     <issueManagement>
         <system>github</system>
