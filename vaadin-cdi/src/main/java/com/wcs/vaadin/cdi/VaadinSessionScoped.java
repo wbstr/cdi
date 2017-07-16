@@ -26,7 +26,7 @@ import java.lang.annotation.*;
  * <p>
  * <p>
  * Contextual instances stored in VaadinSession, so indirectly stored in HTTP session.
- * @PreDestroy called after SessionDestroyEvent fired.
+ * {@link javax.annotation.PreDestroy} called after SessionDestroyEvent fired.
  * </p>
  */
 @NormalScope
