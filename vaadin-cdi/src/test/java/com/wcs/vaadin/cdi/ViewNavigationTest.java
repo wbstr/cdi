@@ -39,16 +39,6 @@ public class ViewNavigationTest extends AbstractManagedCDIIntegrationTest {
     }
 
     @Test
-    public void testNavigationToSameViewCreatesNewContext() throws Exception {
-        clickAndWait(ViewNavigationUI.SUCCESS_NAV_BTN_ID);
-        clickAndWait(ViewNavigationUI.CHANGE_VALUE_BTN_ID);
-        assertBeanValue(ViewNavigationUI.CHANGEDSUCCESS_VALUE);
-
-        clickAndWait(ViewNavigationUI.SUCCESS_NAV_BTN_ID);
-        assertBeanValue(ViewNavigationUI.SUCCESSVIEW_VALUE);
-    }
-
-    @Test
     public void testBeforeViewChangeFiredInOldContext() throws Exception {
         clickAndWait(ViewNavigationUI.SUCCESS_NAV_BTN_ID);
         String value = findElement(ViewNavigationUI.BEFORE_VALUE_LABEL_ID).getText();

@@ -16,10 +16,11 @@
 
 package com.wcs.vaadin.cdi;
 
-import javax.enterprise.inject.spi.Extension;
-
 import com.wcs.vaadin.cdi.access.AccessControl;
+import com.wcs.vaadin.cdi.access.JaasAccessControl;
 import com.wcs.vaadin.cdi.internal.*;
+import com.wcs.vaadin.cdi.server.VaadinCDIServlet;
+import com.wcs.vaadin.cdi.server.VaadinCDIServletService;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
@@ -27,9 +28,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
 
-import com.wcs.vaadin.cdi.access.JaasAccessControl;
-import com.wcs.vaadin.cdi.server.VaadinCDIServlet;
-import com.wcs.vaadin.cdi.server.VaadinCDIServletService;
+import javax.enterprise.inject.spi.Extension;
 
 /**
  */
@@ -41,6 +40,7 @@ public class ArchiveProvider {
             UIScopedContext.class, UIContextualStorageManager.class, CDIUI.class,
             ViewScopedContext.class, ViewScopedContext.class, ViewContextualStorageManager.class,
             VaadinSessionScopedContext.class,
+            ViewContextStrategy.class, ActiveViewTracker.class,
             CDIView.class, VaadinCDIServlet.class,
             VaadinCDIServletService.class,
             CDIUIProvider.DetachListenerImpl.class,

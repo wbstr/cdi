@@ -15,16 +15,16 @@
  */
 package com.wcs.vaadin.cdi;
 
+import com.vaadin.navigator.Navigator;
+import com.vaadin.navigator.View;
+import com.vaadin.ui.UI;
+import com.wcs.vaadin.cdi.ViewContextStrategy.ViewNameAndParameters;
+
+import javax.enterprise.inject.Stereotype;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
-import javax.enterprise.inject.Stereotype;
-
-import com.vaadin.navigator.Navigator;
-import com.vaadin.navigator.View;
-import com.vaadin.ui.UI;
 
 /**
  * Classes implementing {@link View} and annotated with <code>@CDIView</code>
@@ -82,4 +82,14 @@ public @interface CDIView {
      * @return list of UIs in which the view can be shown.
      */
     public Class<? extends UI>[] uis() default { UI.class };
+
+    /**
+     * The strategy to decide when to open a new context for this view.
+     *
+     * @see ViewNameAndParameters
+     * @see com.wcs.vaadin.cdi.ViewContextStrategy.ViewName
+     * @see com.wcs.vaadin.cdi.ViewContextStrategy.Always
+     * @return a strategy class
+     */
+    public Class<? extends ViewContextStrategy> contextStrategy() default ViewNameAndParameters.class;
 }

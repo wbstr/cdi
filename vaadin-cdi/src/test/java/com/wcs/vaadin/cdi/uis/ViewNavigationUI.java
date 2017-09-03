@@ -26,10 +26,8 @@ public class ViewNavigationUI extends UI {
     private static final String REVERTME = "revertme";
     private static final String SUCCESS = "success";
     private static final String DELAY = "delay";
-    public static final String CHANGEDSUCCESS_VALUE = "successother";
     public static final String SUCCESSVIEW_VALUE = "successview";
     public static final String DELAYVIEW_VALUE = "delayview";
-    public static final String CHANGE_VALUE_BTN_ID = "othervalue";
     public static final String BEFORE_VALUE_LABEL_ID = "beforevaluelabel";
     public static final String AFTER_VALUE_LABEL_ID = "aftervaluelabel";
     public static final String BEFORE_LEAVE_VALUE_LABEL_ID = "beforeleavevaluelabel";
@@ -115,25 +113,17 @@ public class ViewNavigationUI extends UI {
         createNavBtn(layout, SUCCESS_NAV_BTN_ID, SUCCESS);
         createNavBtn(layout, DELAY_NAV_BTN_ID, DELAY);
 
-        Button changeValueBtn = new Button("changevalue");
-        changeValueBtn.setId(CHANGE_VALUE_BTN_ID);
-        changeValueBtn.addClickListener(event -> {
-            bean.setValue(CHANGEDSUCCESS_VALUE);
-            value.setValue(bean.getValue());
-        });
-        layout.addComponent(changeValueBtn);
-
         setContent(layout);
     }
 
     private void createNavBtn(VerticalLayout layout, String navBtnId, String targetView) {
-        Button navigateDelayedBtn = new Button(navBtnId);
-        navigateDelayedBtn.setId(navBtnId);
-        navigateDelayedBtn.addClickListener(event -> {
+        Button navigateBtn = new Button(navBtnId);
+        navigateBtn.setId(navBtnId);
+        navigateBtn.addClickListener(event -> {
             navigator.navigateTo(targetView);
             value.setValue(bean.getValue());
         });
-        layout.addComponent(navigateDelayedBtn);
+        layout.addComponent(navigateBtn);
     }
 
     @CDIView("")
