@@ -16,12 +16,13 @@
 
 package com.wcs.vaadin.cdi;
 
-import com.wcs.vaadin.cdi.access.AccessControl;
-import com.wcs.vaadin.cdi.internal.AnnotationUtil;
-import com.wcs.vaadin.cdi.internal.Conventions;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewProvider;
 import com.vaadin.ui.UI;
+import com.wcs.vaadin.cdi.access.AccessControl;
+import com.wcs.vaadin.cdi.internal.AnnotationUtil;
+import com.wcs.vaadin.cdi.internal.Conventions;
+import com.wcs.vaadin.cdi.internal.ViewContextualStorageManager;
 
 import javax.annotation.security.DenyAll;
 import javax.annotation.security.RolesAllowed;
@@ -49,6 +50,9 @@ public class CDIViewProvider implements ViewProvider {
 
     @Inject
     private AccessControl accessControl;
+
+    @Inject
+    private ViewContextualStorageManager viewContextualStorageManager;
 
     @Override
     public String getViewName(String viewAndParameters) {
@@ -221,12 +225,15 @@ public class CDIViewProvider implements ViewProvider {
                 return null;
             }
 
-            CreationalContext creationalContext = beanManager
-                    .createCreationalContext(viewBean);
-            View view = (View) beanManager.getReference(viewBean,
-                    viewBean.getBeanClass(), creationalContext);
+            View view = viewContextualStorageManager.prepareChange(() -> {
+                CreationalContext creationalContext = beanManager
+                        .createCreationalContext(viewBean);
+                return (View) beanManager.getReference(viewBean,
+                        viewBean.getBeanClass(), creationalContext);
+            });
 
             getLogger().log(Level.FINE, "Returning view instance {0}", view.toString());
+
             return view;
         }
 
