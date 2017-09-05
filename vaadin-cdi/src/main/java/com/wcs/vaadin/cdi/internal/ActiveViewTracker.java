@@ -20,8 +20,10 @@ package com.wcs.vaadin.cdi.internal;
 import com.vaadin.navigator.ViewChangeListener;
 import com.wcs.vaadin.cdi.CDINavigator;
 import com.wcs.vaadin.cdi.NormalUIScoped;
+import com.wcs.vaadin.cdi.UIContextInfo;
 
-import javax.annotation.PostConstruct;
+import javax.enterprise.context.Initialized;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import java.io.Serializable;
 
@@ -32,8 +34,7 @@ public class ActiveViewTracker implements Serializable {
     @Inject
     private CDINavigator navigator;
 
-    @PostConstruct
-    private void init() {
+    private void init(@Observes @Initialized(NormalUIScoped.class) UIContextInfo info) {
         navigator.addViewChangeListener(new ViewChangeListener() {
             @Override
             public boolean beforeViewChange(ViewChangeEvent event) {

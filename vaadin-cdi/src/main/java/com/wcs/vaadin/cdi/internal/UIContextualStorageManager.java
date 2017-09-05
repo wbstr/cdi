@@ -1,11 +1,15 @@
 package com.wcs.vaadin.cdi.internal;
 
+import com.wcs.vaadin.cdi.NormalUIScoped;
+import com.wcs.vaadin.cdi.UIContextInfo;
 import com.wcs.vaadin.cdi.VaadinSessionScoped;
 import com.vaadin.ui.UI;
 import org.apache.deltaspike.core.util.context.AbstractContext;
 import org.apache.deltaspike.core.util.context.ContextualStorage;
 
 import javax.annotation.PreDestroy;
+import javax.enterprise.context.Initialized;
+import javax.enterprise.event.Event;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 import java.io.Serializable;
@@ -26,6 +30,10 @@ public class UIContextualStorageManager implements Serializable {
 
     @Inject
     private BeanManager beanManager;
+
+    @Inject
+    private @Initialized(NormalUIScoped.class) Event<UIContextInfo> normalInitEvent;
+
     private final Map<Integer, ContextualStorage> storageMap = new HashMap<Integer, ContextualStorage>();
     private transient Integer openingUiId;
 
@@ -48,6 +56,7 @@ public class UIContextualStorageManager implements Serializable {
 
     public void prepareOpening(int uiId) {
         openingUiId = uiId;
+        normalInitEvent.fire(new UIContextInfo(uiId));
     }
 
     public void cleanupOpening() {
