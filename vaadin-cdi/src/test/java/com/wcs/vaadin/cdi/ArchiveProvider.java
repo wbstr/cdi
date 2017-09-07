@@ -41,7 +41,7 @@ public class ArchiveProvider {
             UIContextInfo.class,
             ViewScopedContext.class, ViewScopedContext.class, ViewContextualStorageManager.class,
             VaadinSessionScopedContext.class,
-            ViewContextStrategy.class, ActiveViewTracker.class,
+            ViewContextStrategy.class, AfterViewChange.class,
             CDIView.class, VaadinCDIServlet.class,
             VaadinCDIServletService.class,
             CDIUIProvider.DetachListenerImpl.class,

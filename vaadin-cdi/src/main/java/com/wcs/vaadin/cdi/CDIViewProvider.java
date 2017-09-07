@@ -19,7 +19,6 @@ package com.wcs.vaadin.cdi;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewProvider;
 import com.vaadin.ui.UI;
-import com.wcs.vaadin.cdi.ViewContextStrategy.ViewState;
 import com.wcs.vaadin.cdi.access.AccessControl;
 import com.wcs.vaadin.cdi.internal.AnnotationUtil;
 import com.wcs.vaadin.cdi.internal.Conventions;
@@ -229,8 +228,7 @@ public class CDIViewProvider implements ViewProvider {
             }
 
             final String parameters = getParameters(viewName);
-            final ViewState viewState = new ViewState(viewName, parameters);
-            View view = viewContextualStorageManager.prepareChange(viewBean, viewState);
+            View view = viewContextualStorageManager.prepareChange(viewBean, viewName, parameters);
 
             getLogger().log(Level.FINE, "Returning view instance {0}", view.toString());
 

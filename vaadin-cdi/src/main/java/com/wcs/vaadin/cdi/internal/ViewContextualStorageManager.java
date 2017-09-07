@@ -5,7 +5,6 @@ import com.vaadin.navigator.ViewChangeListener;
 import com.wcs.vaadin.cdi.CDIView;
 import com.wcs.vaadin.cdi.NormalUIScoped;
 import com.wcs.vaadin.cdi.ViewContextStrategy;
-import com.wcs.vaadin.cdi.ViewContextStrategy.ViewState;
 import org.apache.deltaspike.core.api.provider.BeanProvider;
 import org.apache.deltaspike.core.util.context.AbstractContext;
 import org.apache.deltaspike.core.util.context.ContextualStorage;
@@ -32,18 +31,17 @@ public class ViewContextualStorageManager implements Serializable {
     private BeanManager beanManager;
 
     public void applyChange(ViewChangeListener.ViewChangeEvent event) {
-        final ViewState viewState = new ViewState(event.getViewName(), event.getParameters());
-        if (!currentContext.contains(viewState)) {
+        if (!currentContext.contains(event.getViewName(), event.getParameters())) {
             currentContext.destroy();
             currentContext = openingContext;
             openingContext = CLOSED;
         }
     }
 
-    public View prepareChange(Bean viewBean, ViewState viewState) {
+    public View prepareChange(Bean viewBean, String viewName, String parameters) {
         final Class beanClass = viewBean.getBeanClass();
         final Storage temp = currentContext;
-        if (!currentContext.contains(viewState)) {
+        if (!currentContext.contains(viewName, parameters)) {
             openingContext.destroy();
             openingContext = new Storage(getViewContextStrategy(beanClass));
             currentContext = openingContext;
@@ -59,8 +57,7 @@ public class ViewContextualStorageManager implements Serializable {
     }
 
     public void revertChange(ViewChangeListener.ViewChangeEvent event) {
-        final ViewState viewState = new ViewState(event.getViewName(), event.getParameters());
-        if (openingContext.contains(viewState)) {
+        if (openingContext.contains(event.getViewName(), event.getParameters())) {
             openingContext.destroy();
             openingContext = CLOSED;
         }
@@ -101,14 +98,14 @@ public class ViewContextualStorageManager implements Serializable {
             }
         }
 
-        boolean contains(ViewState state) {
-            return strategy.contains(state);
+        boolean contains(String viewName, String parameters) {
+            return strategy.contains(viewName, parameters);
         }
     }
 
     private static class ClosedStorage extends Storage {
         ClosedStorage() {
-            super((ViewContextStrategy) state -> false);
+            super((viewName, parameters) -> false);
         }
 
         @Override

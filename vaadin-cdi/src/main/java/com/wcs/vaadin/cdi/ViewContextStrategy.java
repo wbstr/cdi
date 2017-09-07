@@ -18,10 +18,10 @@
 
 package com.wcs.vaadin.cdi;
 
-import com.wcs.vaadin.cdi.internal.ActiveViewTracker;
+import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import javax.enterprise.event.Observes;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -34,39 +34,50 @@ public interface ViewContextStrategy extends Serializable {
     /**
      * Whether the active context contains the target navigation state.
 
-     * @param state target navigation state
+     * @param viewName target navigation view name
+     * @param parameters target navigation parameters
      * @return true, to hold context open, false to release, and create a new context
      */
-    boolean contains(ViewState state);
+    boolean contains(String viewName, String parameters);
 
     /**
      * Strategy to hold the context open while
      * view name does not change.
      */
-    @ApplicationScoped
+    @NormalUIScoped
     class ViewName implements ViewContextStrategy {
-        @Inject
-        private ActiveViewTracker activeState;
+        private String currentViewName;
+
+        private void onViewChange(@Observes @AfterViewChange ViewChangeEvent event) {
+            currentViewName = event.getViewName();
+        }
 
         @Override
-        public boolean contains(ViewState state) {
-            return Objects.equals(state.getViewName(), activeState.getViewName());
+        public boolean contains(String viewName, String parameters) {
+            return Objects.equals(viewName, currentViewName);
         }
     }
 
     /**
      * Strategy to hold the context open while
      * view name and view parameters does not change.
+     *
+     * This strategy is on par with vaadin navigator behaviour.
      */
-    @ApplicationScoped
+    @NormalUIScoped
     class ViewNameAndParameters implements ViewContextStrategy {
-        @Inject
-        private ActiveViewTracker activeState;
+        private String currentViewName;
+        private String currentParameters;
+
+        private void onViewChange(@Observes @AfterViewChange ViewChangeEvent event) {
+            currentViewName = event.getViewName();
+            currentParameters = event.getParameters();
+        }
 
         @Override
-        public boolean contains(ViewState state) {
-            return Objects.equals(state.getViewName(), activeState.getViewName())
-                    && Objects.equals(state.getParameters(), activeState.getParameters());
+        public boolean contains(String viewName, String parameters) {
+            return Objects.equals(viewName, currentViewName)
+                    && Objects.equals(parameters, currentParameters);
         }
     }
 
@@ -77,45 +88,9 @@ public interface ViewContextStrategy extends Serializable {
     @ApplicationScoped
     class Always implements ViewContextStrategy {
         @Override
-        public boolean contains(ViewState state) {
+        public boolean contains(String viewName, String parameters) {
             return false;
         }
-    }
-
-    /**
-     * Represents the state of the view to provide information
-     * for strategies.
-     */
-    class ViewState {
-        private final String viewName;
-        private final String parameters;
-
-        /**
-         * Contruct by viewname and parameters
-         * @param viewName view name
-         * @param parameters view parameters
-         */
-        public ViewState(String viewName, String parameters) {
-            this.viewName = viewName;
-            this.parameters = parameters;
-        }
-
-        /**
-         * Getter for view name
-         * @return view name
-         */
-        public String getViewName() {
-            return viewName;
-        }
-
-        /**
-         * Getter for view parameters
-         * @return view parameters
-         */
-        public String getParameters() {
-            return parameters;
-        }
-
     }
 
 }

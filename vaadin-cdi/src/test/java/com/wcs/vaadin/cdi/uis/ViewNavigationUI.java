@@ -5,14 +5,12 @@ import com.vaadin.navigator.ViewBeforeLeaveEvent;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.*;
-import com.wcs.vaadin.cdi.CDINavigator;
-import com.wcs.vaadin.cdi.CDIUI;
-import com.wcs.vaadin.cdi.CDIView;
-import com.wcs.vaadin.cdi.NormalViewScoped;
+import com.wcs.vaadin.cdi.*;
 import com.wcs.vaadin.cdi.internal.Counter;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ContextNotActiveException;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 @CDIUI("")
@@ -30,6 +28,7 @@ public class ViewNavigationUI extends UI {
     public static final String DELAYVIEW_VALUE = "delayview";
     public static final String BEFORE_VALUE_LABEL_ID = "beforevaluelabel";
     public static final String AFTER_VALUE_LABEL_ID = "aftervaluelabel";
+    public static final String CDIAFTER_VALUE_LABEL_ID = "cdiaftervaluelabel";
     public static final String BEFORE_LEAVE_VALUE_LABEL_ID = "beforeleavevaluelabel";
     public static final String SHOW_VIEW_VALUE_LABEL_ID = "viewcomponentvaluelabel";
 
@@ -40,6 +39,7 @@ public class ViewNavigationUI extends UI {
     private Label beforeLeaveValue;
     private Label showViewValue;
     private Label value;
+    private Label cdiAfterValue;
 
     @Override
     protected void init(VaadinRequest request) {
@@ -71,6 +71,10 @@ public class ViewNavigationUI extends UI {
         final Label afterValue = new Label();
         afterValue.setId(AFTER_VALUE_LABEL_ID);
         layout.addComponent(afterValue);
+
+        cdiAfterValue = new Label();
+        cdiAfterValue.setId(CDIAFTER_VALUE_LABEL_ID);
+        layout.addComponent(cdiAfterValue);
 
         final Panel viewDisplayPanel = new Panel();
         viewDisplayPanel.setContent(new Label());
@@ -216,5 +220,8 @@ public class ViewNavigationUI extends UI {
         }
     }
 
+    private void onAfterViewChange(@Observes @AfterViewChange ViewChangeListener.ViewChangeEvent event) {
+        cdiAfterValue.setValue(bean.getValue());
+    }
 
 }
