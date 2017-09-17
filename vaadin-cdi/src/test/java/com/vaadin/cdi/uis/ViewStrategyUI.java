@@ -92,7 +92,8 @@ public class ViewStrategyUI extends UI {
         }
     }
 
-    @CDIView(value = BYVIEWNAME, contextStrategy = ViewContextStrategy.ViewName.class)
+    @CDIView(value = BYVIEWNAME)
+    @ViewNameDriven
     public static class ByViewNameView implements View {
         @Inject
         ViewScopedBean bean;
@@ -117,7 +118,8 @@ public class ViewStrategyUI extends UI {
         }
     }
 
-    @CDIView(value = BYVIEWNAMEPARAMS, contextStrategy = ViewContextStrategy.ViewNameAndParameters.class)
+    @CDIView(value = BYVIEWNAMEPARAMS)
+    @ViewNameAndParametersDriven
     public static class ByViewNameAndParametersView implements View {
         @Inject
         ViewScopedBean bean;
@@ -142,7 +144,8 @@ public class ViewStrategyUI extends UI {
         }
     }
 
-    @CDIView(value = BYALWAYS, contextStrategy = ViewContextStrategy.Always.class)
+    @CDIView(value = BYALWAYS)
+    @EveryNavigationDriven
     public static class ByAlwaysView implements View {
         @Inject
         ViewScopedBean bean;

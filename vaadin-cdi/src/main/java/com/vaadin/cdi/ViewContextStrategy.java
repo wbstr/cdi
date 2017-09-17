@@ -28,7 +28,37 @@ import java.util.Objects;
  * Decision strategy whether target navigation state
  * belongs to active view context.
  * <p>
- * Implementations instantiated by CDI, so should have a scope.
+ * Separate annotations annotated by {@link ViewContextStrategyQualifier}
+ * have to exist for each of the implementations.
+ * <p>
+ * Example of a custom implementation:
+ * <p>
+ * A separate annotation.
+ * <pre>
+ * {@literal @}Retention(RetentionPolicy.RUNTIME)
+ * {@literal @}Target({ ElementType.TYPE })
+ * {@literal @}ViewContextStrategyQualifier
+ *  public {@literal @}interface MyStrategyAnnotation {
+ *  }
+ * </pre>
+ * An implementation class. Instantiated by CDI, so should have a scope.
+ * <pre>
+ * {@literal @}NormalUIScoped
+ * {@literal @}MyStrategyAnnotation
+ *  public class MyStrategy implements ViewContextStrategy {
+ *    public boolean contains(String viewName, String parameters) {
+ *      ...
+ *    }
+ *  }
+ * </pre>
+ * Use annotation on the view.
+ * <pre>
+ * {@literal @}CDIView("myView")
+ * {@literal @}MyStrategyAnnotation
+ *  public MyView implements View {
+ *  ...
+ *  }
+ * </pre>
  */
 public interface ViewContextStrategy extends Serializable {
 
@@ -53,6 +83,7 @@ public interface ViewContextStrategy extends Serializable {
      * - Navigator view change events does not mean a view context change.
      */
     @NormalUIScoped
+    @ViewNameDriven
     class ViewName implements ViewContextStrategy {
         private String currentViewName;
 
@@ -79,6 +110,7 @@ public interface ViewContextStrategy extends Serializable {
      * again on the same view instance.
      */
     @NormalUIScoped
+    @ViewNameAndParametersDriven
     class ViewNameAndParameters implements ViewContextStrategy {
         private String currentViewName;
         private String currentParameters;
@@ -107,6 +139,7 @@ public interface ViewContextStrategy extends Serializable {
      * even when parameters does not change.
      */
     @NormalUIScoped
+    @EveryNavigationDriven
     class Always implements ViewContextStrategy {
         @Override
         public boolean contains(String viewName, String parameters) {

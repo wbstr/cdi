@@ -38,7 +38,7 @@ import static java.lang.annotation.ElementType.*;
  * because it is looked up in the new context.
  * <p>
  * Though, context of new view, and context of old view can be the same
- * according to {@link CDIView#contextStrategy()}.
+ * according to selected {@link ViewContextStrategy}.
  */
 @Qualifier
 @Retention(RetentionPolicy.RUNTIME)
